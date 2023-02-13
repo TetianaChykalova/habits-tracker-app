@@ -1,7 +1,7 @@
 import express from 'express'
-import {all} from "express/lib/application";
 
 const app = express();
+
 app.use(express.json());
 
 app.get("/goals", (req, res) => {
@@ -14,7 +14,7 @@ app.get("/goals", (req, res) => {
         ]
         res.send(allGoals)
     } catch (err) {
-        console.log('not found')
+        console.log('goals not found')
     }
 })
 

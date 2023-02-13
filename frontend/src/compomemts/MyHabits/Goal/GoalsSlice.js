@@ -1,6 +1,15 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import Axios from "axios";
 
-const getGoals = createAsyncThunk
+export const getGoals = createAsyncThunk('goals/get', async (thunkAPI) => {
+    // try {
+        const response = await Axios.get('/goals');
+        return response.data;
+    // } catch (error) {
+    //     const {rejectWithValue} = thunkAPI;
+    //     return rejectWithValue(error.response.data)
+    // }
+})
 
 const initialGoalsState = {
     goalsList: [],
@@ -12,7 +21,25 @@ const GoalsSlice = createSlice({
     name: 'goals',
     initialState: initialGoalsState,
     reducers: {},
-    extraReducers: {}
+    extraReducers: {
+        [getGoals.pending] : (state) => {
+            if (state.loading === 'idle') {
+                state.loading = 'pending';
+            }
+        },
+        [getGoals.fulfilled] : (state, action) => {
+            if (state.loading === 'pending') {
+                state.loading = 'idle';
+                state.goalsList = action.payload;
+            }
+        },
+        [getGoals.rejected] : (state, action) => {
+            if (state.loading === 'pending') {
+                state.loading = 'idle';
+                state.error = action.error;
+            }
+        }
+    }
 })
 
 export default GoalsSlice.reducer;
